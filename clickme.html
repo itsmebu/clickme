@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click to reveal video</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(145deg, #0b1a2e 0%, #1a2f3f 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .card {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(20, 30, 45, 0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            padding: 2rem 2rem 2rem 2rem;
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(120, 180, 255, 0.15);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(100, 170, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            color: #eef5ff;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        h1 span {
+            background: #2e5a9c;
+            font-size: 1.6rem;
+            padding: 0.2rem 0.75rem;
+            border-radius: 60px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .subhead {
+            color: #9bb7d4;
+            margin: 0 0 2rem 0;
+            font-size: 1rem;
+            font-weight: 400;
+            border-left: 3px solid #2e5a9c;
+            padding-left: 1rem;
+        }
+
+        .video-wrapper {
+            background: #0a121c;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 12px 25px -8px black;
+            margin-bottom: 1.75rem;
+            transition: box-shadow 0.3s;
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0b1119;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;  /* keeps aspect ratio, letterbox if needed */
+            display: block;
+            background: #000;
+            border-radius: 1.4rem;
+        }
+
+        /* Placeholder when video is hidden */
+        .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #5f7d9c;
+            font-size: 1.1rem;
+            gap: 0.75rem;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            background: radial-gradient(circle at 30% 30%, #162433, #0b111a);
+        }
+
+        .placeholder svg {
+            width: 4rem;
+            height: 4rem;
+            opacity: 0.5;
+            stroke: #5f7d9c;
+            fill: none;
+        }
+
+        .placeholder p {
+            margin: 0;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            background: rgba(0,0,0,0.3);
+            padding: 0.25rem 1rem;
+            border-radius: 60px;
+            font-size: 0.9rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.9rem 2.5rem;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            letter-spacing: 0.3px;
+            background: #1e3857;
+            color: #d9e9ff;
+            box-shadow: 0 6px 0 #0a1420, 0 10px 20px -5px rgba(0, 0, 0, 0.6);
+            transform: translateY(0);
+            border: 1px solid rgba(130, 190, 255, 0.25);
+            flex: 1 1 auto;
+        }
+
+        .btn:hover {
+            background: #264a70;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #0a1420, 0 15px 25px -5px rgba(0, 0, 0, 0.7);
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #0a1420, 0 10px 16px -5px black;
+        }
+
+        .btn-primary {
+            background: #2a6f9c;
+            border-color: rgba(160, 210, 255, 0.5);
+            color: white;
+            box-shadow: 0 6px 0 #10344e, 0 10px 20px -5px black;
+        }
+
+        .btn-primary:hover {
+            background: #3586bb;
+        }
+
+        .btn-secondary {
+            background: #1e2f3f;
+            border-color: rgba(110, 150, 190, 0.3);
+            box-shadow: 0 6px 0 #0f1a24, 0 10px 20px -5px black;
+        }
+
+        .btn-secondary:hover {
+            background: #263e52;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .video-status {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #7e9cbb;
+            min-height: 1.6rem;
+            transition: opacity 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>
+            <span>▶</span> Video reveal
+        </h1>
+        <div class="subhead">
+            Click the button to show and play your MP4 video
+        </div>
+
+        <!-- VIDEO WRAPPER: shows placeholder or actual video -->
+        <div class="video-wrapper" id="videoWrapper">
+            <!-- Placeholder shown initially -->
+            <div class="placeholder" id="placeholder">
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7" fill="none" stroke="currentColor"/>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" fill="none" stroke="currentColor"/>
+                </svg>
+                <p>Your video is waiting</p>
+            </div>
+
+            <!-- Actual video element, hidden by default -->
+            <div class="video-container hidden" id="videoContainer">
+                <video id="myVideo" controls preload="metadata" playsinline>
+                    <!-- Replace the source below with your own MP4 file or URL -->
+                    <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+            <button class="btn btn-primary" id="showBtn">
+                🎬 Show & Play Video
+            </button>
+            <button class="btn btn-secondary" id="hideBtn">
+                ⏹️ Hide Video
+            </button>
+        </div>
+        <div class="video-status" id="statusMessage"></div>
+    </div>
+
+    <script>
+        (function() {
+            // ----- DOM elements -----
+            const videoWrapper = document.getElementById('videoWrapper');
+            const placeholder = document.getElementById('placeholder');
+            const videoContainer = document.getElementById('videoContainer');
+            const video = document.getElementById('myVideo');
+            const showBtn = document.getElementById('showBtn');
+            const hideBtn = document.getElementById('hideBtn');
+            const statusMsg = document.getElementById('statusMessage');
+
+            // ----- helper to show status message (auto clear after 2.5s) -----
+            let statusTimeout = null;
+            function setStatus(text, isError = false) {
+                if (statusTimeout) clearTimeout(statusTimeout);
+                statusMsg.textContent = text;
+                statusMsg.style.color = isError ? '#ff9f9f' : '#7e9cbb';
+                if (text) {
+                    statusTimeout = setTimeout(() => {
+                        statusMsg.textContent = '';
+                    }, 2500);
+                }
+            }
+
+            // ----- check video source (robustness) -----
+            function isVideoReady() {
+                // Check if there's a source element and it has a src attribute
+                const sources = video.querySelectorAll('source');
+                if (sources.length === 0) {
+                    // maybe video has src attribute directly? but we used source tag
+                    if (!video.src) return false;
+                } else {
+                    // check first source for empty src
+                    const firstSrc = sources[0].getAttribute('src');
+                    if (!firstSrc || firstSrc.trim() === '') {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            // ----- core show & play function -----
+            function showAndPlayVideo() {
+                if (!isVideoReady()) {
+                    setStatus('⚠️ No video source found. Please check the MP4 file.', true);
+                    return;
+                }
+
+                // hide placeholder, show video container
+                placeholder.classList.add('hidden');
+                videoContainer.classList.remove('hidden');
+
+                // reset video to beginning (optional, but gives predictable play)
+                try {
+                    video.currentTime = 0;
+                } catch (e) {
+                    // ignore, some browsers may throw if metadata not loaded
+                }
+
+                // attempt to play
+                const playPromise = video.play();
+
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => {
+                            setStatus('▶️ Playing video');
+                        })
+                        .catch(error => {
+                            // Autoplay might be blocked, or other issue. Show message but keep controls.
+                            console.warn('Playback error:', error);
+                            if (error.name === 'NotAllowedError') {
+                                setStatus('ℹ️ Click the play button in the video to start.', false);
+                            } else if (error.name === 'NotSupportedError') {
+                                setStatus('❌ Video format not supported by your browser.', true);
+                            } else {
+                                setStatus('⚠️ Press play on the video controls.', false);
+                            }
+                            // still keep video visible with controls
+                        });
+                } else {
+                    // fallback for very old browsers
+                    setStatus('▶️ Video ready (press play if needed)');
+                }
+            }
+
+            // ----- hide video & pause/stop -----
+            function hideVideo() {
+                // pause and reset currentTime to 0 if video is loaded
+                if (!video.paused) {
+                    video.pause();
+                }
+                // show placeholder, hide container
+                placeholder.classList.remove('hidden');
+                videoContainer.classList.add('hidden');
+                // optional: reset video position so next show starts from beginning
+                try {
+                    video.currentTime = 0;
+                } catch (e) {}
+                setStatus('⏸️ Video hidden');
+            }
+
+            // ----- attach event listeners -----
+            showBtn.addEventListener('click', showAndPlayVideo);
+            hideBtn.addEventListener('click', hideVideo);
+
+            // ----- extra: if video ends, keep it visible but you can also auto-hide? 
+            // we'll just show a status update, but keep visible.
+            video.addEventListener('ended', () => {
+                setStatus('✓ Video finished');
+            });
+
+            // if error occurs on video
+            video.addEventListener('error', (e) => {
+                let errorMsg = 'Unknown video error';
+                if (video.error) {
+                    switch (video.error.code) {
+                        case 1: errorMsg = 'Video loading aborted'; break;
+                        case 2: errorMsg = 'Network error while loading video'; break;
+                        case 3: errorMsg = 'Video decoding failed'; break;
+                        case 4: errorMsg = 'Video not supported or file not found'; break;
+                    }
+                }
+                setStatus('❌ ' + errorMsg, true);
+                // make sure placeholder is shown if video fails? Let's keep it visible but with error message
+                // However we already show container. Better to show container with error, but also we can show placeholder? 
+                // For simplicity, we leave container visible with error in status.
+                // If you prefer to revert to placeholder on error, uncomment below:
+                // placeholder.classList.remove('hidden');
+                // videoContainer.classList.add('hidden');
+            });
+
+            // on loadedmetadata, we can update duration or just ensure it's okay
+            video.addEventListener('loadedmetadata', () => {
+                // video is ready; we can pre-set currentTime or whatever
+                console.log('Video metadata loaded, duration:', video.duration);
+            });
+
+            // initial state: placeholder visible, video hidden. Ensure that.
+            // (already present in HTML, but just in case)
+            placeholder.classList.remove('hidden');
+            videoContainer.classList.add('hidden');
+
+            // set a default status (empty)
+            setStatus('');
+
+            // (Optional) preload metadata but don't play.
+            // No extra action needed.
+        })();
+    </script>
+</body>
+</html>
