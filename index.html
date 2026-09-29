@@ -69,6 +69,31 @@
             background: #000;
             border-radius: 1rem;
         }
+
+        .sorry-message {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ff5c5c;
+            text-align: center;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(255, 92, 92, 0.6), 0 4px 10px rgba(0,0,0,0.7);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .sorry-message.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 <body>
@@ -82,10 +107,13 @@
         </video>
     </div>
 
+    <div class="sorry-message hidden" id="sorryMessage">SORRY NA</div>
+
     <script>
         const clickMeBtn = document.getElementById('clickMeBtn');
         const videoWrapper = document.getElementById('videoWrapper');
         const video = document.getElementById('myVideo');
+        const sorryMessage = document.getElementById('sorryMessage');
 
         clickMeBtn.addEventListener('click', function () {
             // Hide the button
@@ -98,6 +126,11 @@
             video.play().catch(function (error) {
                 console.warn('Autoplay blocked or failed:', error);
             });
+        });
+
+        // When the video ends, show "SORRY NA"
+        video.addEventListener('ended', function () {
+            sorryMessage.classList.remove('hidden');
         });
     </script>
 
