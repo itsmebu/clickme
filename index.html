@@ -68,11 +68,21 @@
             border-radius: 1rem;
         }
 
+        /* Final reveal container: holds "SORRY NA" + image */
+        .final-reveal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .final-reveal.hidden {
+            display: none;
+        }
+
         .sorry-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             font-size: 5rem;
             font-weight: 800;
             color: #ff5c5c;
@@ -80,21 +90,36 @@
             letter-spacing: 6px;
             text-shadow: 0 0 30px rgba(255, 92, 92, 0.8), 0 6px 15px rgba(0,0,0,0.8);
             animation: fadeIn 0.8s ease forwards;
-            pointer-events: none;
         }
 
-        .sorry-message.hidden {
-            display: none;
+        .final-image {
+            max-width: 500px;
+            width: 90%;
+            border-radius: 1rem;
+            box-shadow: 0 15px 30px -10px black;
+            opacity: 0;
+            animation: fadeInImage 1s ease 0.8s forwards; /* appears 0.8s after SORRY NA */
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(0.6);
+                transform: scale(0.6);
             }
             to {
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInImage {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
@@ -110,13 +135,16 @@
         </video>
     </div>
 
-    <div class="sorry-message hidden" id="sorryMessage">SORRY NA</div>
+    <div class="final-reveal hidden" id="finalReveal">
+        <div class="sorry-message">SORRY NA</div>
+        <img src="1.jpeg" alt="Sorry" class="final-image">
+    </div>
 
     <script>
         const clickMeBtn = document.getElementById('clickMeBtn');
         const videoWrapper = document.getElementById('videoWrapper');
         const video = document.getElementById('myVideo');
-        const sorryMessage = document.getElementById('sorryMessage');
+        const finalReveal = document.getElementById('finalReveal');
 
         clickMeBtn.addEventListener('click', function () {
             // Hide the button
@@ -131,10 +159,10 @@
             });
         });
 
-        // When the video ends, hide the video and show "SORRY NA" in the center
+        // When the video ends: hide video, show "SORRY NA" + image
         video.addEventListener('ended', function () {
             videoWrapper.classList.add('hidden');
-            sorryMessage.classList.remove('hidden');
+            finalReveal.classList.remove('hidden');
         });
     </script>
 
