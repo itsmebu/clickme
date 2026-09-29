@@ -15,11 +15,9 @@
             min-height: 100vh;
             margin: 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
-            gap: 2rem;
         }
 
         .btn {
@@ -71,13 +69,18 @@
         }
 
         .sorry-message {
-            font-size: 3rem;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
             font-weight: 800;
             color: #ff5c5c;
             text-align: center;
-            letter-spacing: 4px;
-            text-shadow: 0 0 20px rgba(255, 92, 92, 0.6), 0 4px 10px rgba(0,0,0,0.7);
+            letter-spacing: 6px;
+            text-shadow: 0 0 30px rgba(255, 92, 92, 0.8), 0 6px 15px rgba(0,0,0,0.8);
             animation: fadeIn 0.8s ease forwards;
+            pointer-events: none;
         }
 
         .sorry-message.hidden {
@@ -87,11 +90,11 @@
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: scale(0.8);
+                transform: translate(-50%, -50%) scale(0.6);
             }
             to {
                 opacity: 1;
-                transform: scale(1);
+                transform: translate(-50%, -50%) scale(1);
             }
         }
     </style>
@@ -128,8 +131,9 @@
             });
         });
 
-        // When the video ends, show "SORRY NA"
+        // When the video ends, hide the video and show "SORRY NA" in the center
         video.addEventListener('ended', function () {
+            videoWrapper.classList.add('hidden');
             sorryMessage.classList.remove('hidden');
         });
     </script>
