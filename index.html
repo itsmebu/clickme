@@ -49,78 +49,28 @@
             display: none;
         }
 
-        .video-wrapper {
-            max-width: 800px;
-            width: 100%;
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 12px 25px -8px black;
-        }
-
-        .video-wrapper.hidden {
-            display: none;
-        }
-
-        video {
-            width: 100%;
-            display: block;
-            background: #000;
-            border-radius: 1rem;
-        }
-
-        /* Final reveal container: holds "SORRY NA" + image */
-        .final-reveal {
+        /* Full screen audio wrapper */
+        .audio-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2rem;
-            text-align: center;
+            background: #0b1a2e;
+            z-index: 1000;
         }
 
-        .final-reveal.hidden {
+        .audio-wrapper.hidden {
             display: none;
         }
 
-        .sorry-message {
-            font-size: 5rem;
-            font-weight: 800;
-            color: #ff5c5c;
-            text-align: center;
-            letter-spacing: 6px;
-            text-shadow: 0 0 30px rgba(255, 92, 92, 0.8), 0 6px 15px rgba(0,0,0,0.8);
-            animation: fadeIn 0.8s ease forwards;
-        }
-
-        .final-image {
-            max-width: 500px;
+        audio {
             width: 90%;
-            border-radius: 1rem;
-            box-shadow: 0 15px 30px -10px black;
-            opacity: 0;
-            animation: fadeInImage 1s ease 0.8s forwards; /* appears 0.8s after SORRY NA */
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.6);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes fadeInImage {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            max-width: 600px;
+            outline: none;
         }
     </style>
 </head>
@@ -128,41 +78,36 @@
 
     <button class="btn" id="clickMeBtn">Click Me</button>
 
-    <div class="video-wrapper hidden" id="videoWrapper">
-        <video id="myVideo" controls playsinline>
-            <source src="vid.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
-
-    <div class="final-reveal hidden" id="finalReveal">
-        <div class="sorry-message">SORRY NA</div>
-        <img src="1.jpeg" alt="Sorry" class="final-image">
+    <div class="audio-wrapper hidden" id="audioWrapper">
+        <audio id="myAudio" controls playsinline>
+            <source src="3.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
     </div>
 
     <script>
         const clickMeBtn = document.getElementById('clickMeBtn');
-        const videoWrapper = document.getElementById('videoWrapper');
-        const video = document.getElementById('myVideo');
-        const finalReveal = document.getElementById('finalReveal');
+        const audioWrapper = document.getElementById('audioWrapper');
+        const audio = document.getElementById('myAudio');
 
         clickMeBtn.addEventListener('click', function () {
             // Hide the button
             clickMeBtn.classList.add('hidden');
 
-            // Show the video
-            videoWrapper.classList.remove('hidden');
+            // Show the full screen audio wrapper
+            audioWrapper.classList.remove('hidden');
 
-            // Play the video
-            video.play().catch(function (error) {
+            // Play the audio
+            audio.play().catch(function (error) {
                 console.warn('Autoplay blocked or failed:', error);
             });
         });
 
-        // When the video ends: hide video, show "SORRY NA" + image
-        video.addEventListener('ended', function () {
-            videoWrapper.classList.add('hidden');
-            finalReveal.classList.remove('hidden');
+        // When the audio ends: hide the audio wrapper
+        audio.addEventListener('ended', function () {
+            audioWrapper.classList.add('hidden');
+            // Optionally show the button again
+            // clickMeBtn.classList.remove('hidden');
         });
     </script>
 
