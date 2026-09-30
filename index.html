@@ -49,28 +49,29 @@
             display: none;
         }
 
-        /* Full screen audio wrapper */
-        .audio-wrapper {
+        /* Full screen video wrapper */
+        .video-wrapper {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
+            background: #000;
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #0b1a2e;
-            z-index: 1000;
         }
 
-        .audio-wrapper.hidden {
+        .video-wrapper.hidden {
             display: none;
         }
 
-        audio {
-            width: 90%;
-            max-width: 600px;
-            outline: none;
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* zooms in to fill the screen */
+            display: block;
         }
     </style>
 </head>
@@ -78,36 +79,34 @@
 
     <button class="btn" id="clickMeBtn">Click Me</button>
 
-    <div class="audio-wrapper hidden" id="audioWrapper">
-        <audio id="myAudio" controls playsinline>
-            <source src="3.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
+    <div class="video-wrapper hidden" id="videoWrapper">
+        <video id="myVideo" controls playsinline>
+            <source src="3.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
 
     <script>
         const clickMeBtn = document.getElementById('clickMeBtn');
-        const audioWrapper = document.getElementById('audioWrapper');
-        const audio = document.getElementById('myAudio');
+        const videoWrapper = document.getElementById('videoWrapper');
+        const video = document.getElementById('myVideo');
 
         clickMeBtn.addEventListener('click', function () {
             // Hide the button
             clickMeBtn.classList.add('hidden');
 
-            // Show the full screen audio wrapper
-            audioWrapper.classList.remove('hidden');
+            // Show the full screen video
+            videoWrapper.classList.remove('hidden');
 
-            // Play the audio
-            audio.play().catch(function (error) {
+            // Play the video
+            video.play().catch(function (error) {
                 console.warn('Autoplay blocked or failed:', error);
             });
         });
 
-        // When the audio ends: hide the audio wrapper
-        audio.addEventListener('ended', function () {
-            audioWrapper.classList.add('hidden');
-            // Optionally show the button again
-            // clickMeBtn.classList.remove('hidden');
+        // When the video ends: hide the video wrapper
+        video.addEventListener('ended', function () {
+            videoWrapper.classList.add('hidden');
         });
     </script>
 
